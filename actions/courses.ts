@@ -4,9 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function createCourse(
-  _prevState: { error: string } | null,
+  _prevState: { error: string } | { success: true } | null,
   formData: FormData
-): Promise<{ error: string } | null> {
+): Promise<{ error: string } | { success: true } | null> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
@@ -23,7 +23,7 @@ export async function createCourse(
   if (error) return { error: error.message }
   revalidatePath('/admin/courses')
   revalidatePath('/dashboard')
-  return null
+  return { success: true }
 }
 
 export async function deleteCourse(courseId: string) {

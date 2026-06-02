@@ -42,6 +42,8 @@ export async function uploadFile(
 
 export async function deleteFile(fileId: string, storagePath: string, courseId: string) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
   const { error } = await supabase.from('course_files').delete().eq('id', fileId)
   if (error) throw new Error(error.message)
   await supabase.storage.from('course-files').remove([storagePath])
@@ -50,6 +52,8 @@ export async function deleteFile(fileId: string, storagePath: string, courseId: 
 
 export async function getSignedUrl(storagePath: string): Promise<string | null> {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
   const { data, error } = await supabase.storage
     .from('course-files')
     .createSignedUrl(storagePath, 60 * 60 * 8)
