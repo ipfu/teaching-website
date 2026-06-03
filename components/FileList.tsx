@@ -1,3 +1,5 @@
+'use client'
+
 import { deleteFile } from '@/actions/files'
 import type { CourseFile } from '@/lib/types'
 import Link from 'next/link'
