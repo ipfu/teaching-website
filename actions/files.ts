@@ -16,7 +16,8 @@ export async function uploadFile(
   if (!file || file.size === 0) return { error: 'กรุณาเลือกไฟล์' }
   if (file.type !== 'application/pdf') return { error: 'รองรับเฉพาะไฟล์ PDF เท่านั้น' }
 
-  const storagePath = `${courseId}/${Date.now()}-${file.name}`
+  const safeName = file.name.replace(/\s+/g, '_')
+  const storagePath = `${courseId}/${Date.now()}-${safeName}`
 
   const { error: uploadError } = await supabase.storage
     .from('course-files')
