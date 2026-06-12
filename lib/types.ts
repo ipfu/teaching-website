@@ -29,4 +29,5 @@ export interface CourseFile {
   storage_path: string
   uploaded_by: string | null
   created_at: string
+  display_order: number
 }
