@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -134,6 +134,10 @@ interface Props {
 
 export default function FileList({ files: initialFiles, signedUrls, currentUserId, isAdmin }: Props) {
   const [files, setFiles] = useState(initialFiles)
+
+  useEffect(() => {
+    setFiles(initialFiles)
+  }, [initialFiles])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })

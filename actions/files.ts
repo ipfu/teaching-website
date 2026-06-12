@@ -84,11 +84,14 @@ export async function reorderFiles(orderedIds: string[], courseId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  await Promise.all(
+  const results = await Promise.all(
     orderedIds.map((id, index) =>
       supabase.from('course_files').update({ display_order: index }).eq('id', id)
     )
   )
+
+  const firstError = results.find(r => r.error)
+  if (firstError?.error) throw new Error(firstError.error.message)
 
   revalidatePath(`/courses/${courseId}`)
 }

@@ -55,6 +55,7 @@ export default function PdfViewer({ url, courseId }: Props) {
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement) return
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext() }
       if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev() }
       if (e.key === 'f' || e.key === 'F') toggleFullscreen()
