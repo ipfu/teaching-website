@@ -21,7 +21,6 @@ export default async function CoursePage({ params }: Props) {
       .from('course_files')
       .select('*')
       .eq('course_id', id)
-      .order('display_order', { ascending: true })
       .order('created_at', { ascending: false }),
     supabase.from('users').select('role').eq('id', authUser!.id).single(),
   ])
