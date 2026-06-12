@@ -61,3 +61,34 @@ export async function getSignedUrl(storagePath: string): Promise<string | null> 
   if (error || !data) return null
   return data.signedUrl
 }
+
+export async function renameFile(fileId: string, newName: string, courseId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const trimmed = newName.trim()
+  if (!trimmed) throw new Error('ชื่อไม่ถูกต้อง')
+
+  const { error } = await supabase
+    .from('course_files')
+    .update({ filename: trimmed })
+    .eq('id', fileId)
+
+  if (error) throw new Error(error.message)
+  revalidatePath(`/courses/${courseId}`)
+}
+
+export async function reorderFiles(orderedIds: string[], courseId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      supabase.from('course_files').update({ display_order: index }).eq('id', id)
+    )
+  )
+
+  revalidatePath(`/courses/${courseId}`)
+}
